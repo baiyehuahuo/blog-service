@@ -1,13 +1,23 @@
 package main
 
 import (
+	"blog-service/internal/routers"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
+	"time"
 )
 
 func main() {
-	r := getRouter()
-	if err := r.Run(":8080"); err != nil {
+	r := routers.NewRouter()
+	s := &http.Server{
+		Addr:           ":8080",
+		Handler:        r,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	if err := s.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
