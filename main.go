@@ -27,6 +27,9 @@ func init() {
 	}
 }
 
+// @title 博客系统
+// @version 1.0
+// @description Go 语言编程之旅：一起用 Go 做项目 第二章
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	global.Logger.Infof("%s: test-logger/%s", "fwf", "blog-service")

@@ -53,3 +53,24 @@ Go 语言编程之旅第二章，博客程序
 6. 响应处理
    - 与错误码标准化相对应
 7. **早期做标准化，后期省心省力**
+
+## 生成接口文档
+1. Swagger 扫描注解生成 OpenAPI 规范化文档
+2. OpenAPI 规范
+   - 有关 API 的描述
+   - API 可用路径
+   - 每个路径上的可用操作
+   - 每个操作的输入输出格式
+3. Swagger 需要的注解
+   - @Summary 摘要
+   - @Produce 响应类型
+   - @Param 参数格式 从左到右参数为参数名，入参类型，数据类型，是否必填，注释
+   - @Success 响应成功 从左到右参数为状态码，入参类型，数据类型，注释
+   - @Failure 响应失败 从左到右参数为状态码，入参类型，数据类型，注释
+   - @Router 路由 从左到右为路由地址 HTTP 方法
+4. 主目录下执行 swag init
+5. 路由
+   - 在路由中注册 `r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))`
+   - 同时要 `import` 对应的 `docs` 目录， 通过 `_` 引入不调用即可
+   - 访问 `ip:port/swagger/index.html` 即可看到对应的OpenAPI接口文档
+6. 隐藏字段不易于展示， 建议新建一个针对 `Swagger` 的对象
