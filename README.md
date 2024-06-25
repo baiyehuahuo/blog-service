@@ -74,3 +74,8 @@ Go 语言编程之旅第二章，博客程序
    - 同时要 `import` 对应的 `docs` 目录， 通过 `_` 引入不调用即可
    - 访问 `ip:port/swagger/index.html` 即可看到对应的OpenAPI接口文档
 6. 隐藏字段不易于展示， 建议新建一个针对 `Swagger` 的对象
+
+## 为接口做参数校验
+1. 通过开源项目 go-playground/validator 做入参检测
+2. 在结构体的 binding 中增加对应标签
+3. 主要是利用外部包做开发，了解入参出参，信息的规范化
