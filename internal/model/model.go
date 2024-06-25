@@ -11,7 +11,7 @@ import (
 
 type Model struct {
 	ID         uint32 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
-	CreatedOn  uint32 `gorm:"column:created_on;default:0"`  // 创建时间
+	CreatedOn  uint32 `gorm:"column:created_on;default:0"`  // 创建时间  todo uint32 可能不太够用
 	CreatedBy  string `gorm:"column:created_by"`            // 创建人
 	ModifiedOn uint32 `gorm:"column:modified_on;default:0"` // 修改时间
 	ModifiedBy string `gorm:"column:modified_by"`           // 修改人
@@ -52,7 +52,7 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 	if scope.HasError() {
 		return
 	}
-	now := time.Now().UnixNano()
+	now := time.Now().Unix()
 	// FieldByName 获取当前是否包含所需字段
 	if createTimeField, ok := scope.FieldByName("CreatedOn"); ok && createTimeField.IsBlank {
 		_ = createTimeField.Set(now)

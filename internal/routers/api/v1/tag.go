@@ -5,6 +5,7 @@ import (
 	"blog-service/internal/service"
 	"blog-service/pkg/app"
 	"blog-service/pkg/errcode"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +26,30 @@ func NewTag() Tag {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [post]
-func (t Tag) Create(c *gin.Context) {}
+func (t Tag) Create(c *gin.Context) {
+	var (
+		param       = service.CreateTagRequest{}
+		response    = app.NewResponse(c)
+		valid, errs = app.BindAndValid(c, &param)
+	)
+	if !valid {
+		p, q := c.PostForm("name"), c.PostForm("created_by")
+		fmt.Println(p, q)
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c)
+	err := svc.CreateTag(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.CreateTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorCreateTagFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
+}
 
 // Delete
 // @Summary 删除标签
@@ -35,7 +59,27 @@ func (t Tag) Create(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags/{id} [delete]
-func (t Tag) Delete(c *gin.Context) {}
+func (t Tag) Delete(c *gin.Context) {
+	var (
+		param       = service.DeleteTagRequest{}
+		response    = app.NewResponse(c)
+		valid, errs = app.BindAndValid(c, &param)
+	)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid err: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+	svc := service.New(c)
+	err := svc.DeleteTag(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.DeleteTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorDeleteTagFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
+}
 
 // Update
 // @Summary 更新标签
@@ -48,7 +92,27 @@ func (t Tag) Delete(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [put]
-func (t Tag) Update(c *gin.Context) {}
+func (t Tag) Update(c *gin.Context) {
+	var (
+		param       = service.UpdateTagRequest{}
+		response    = app.NewResponse(c)
+		valid, errs = app.BindAndValid(c, &param)
+	)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid err: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+	svc := service.New(c)
+	err := svc.UpdateTag(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.UpdateTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
+}
 
 func (t Tag) Get(c *gin.Context) {}
 
@@ -64,13 +128,39 @@ func (t Tag) Get(c *gin.Context) {}
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
-	params := service.TagListRequest{}
-	response := app.NewResponse(c)
-	valid, errs := app.BindAndValid(c, &params)
+	var (
+		param       = service.TagListRequest{}
+		response    = app.NewResponse(c)
+		valid, errs = app.BindAndValid(c, &param)
+	)
+	// 入参校验 绑定
 	if !valid {
-		global.Logger.Errorf("app.BindAndValid err: %v", errs)
-		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Error()))
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
-	response.ToResponse(gin.H{})
+
+	// 获取标签总数
+	var (
+		svc            = service.New(c)
+		paper          = app.Paper{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
+		totalRows, err = svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
+	)
+	if err != nil {
+		global.Logger.Errorf("svc.CountTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorCountTagFail)
+		return
+	}
+
+	// 获取标签列表
+	tags, err := svc.GetTagList(&param, &paper)
+	if err != nil {
+		global.Logger.Errorf("svc.GetTagList: %v", err)
+		response.ToErrorResponse(errcode.ErrorGetTagListFail)
+		return
+	}
+
+	// 序列化返回
+	response.ToResponseList(tags, totalRows)
+	return
 }

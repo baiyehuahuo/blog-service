@@ -17,7 +17,7 @@ type TagSwagger struct {
 }
 
 func (Tag) TableName() string {
-	return "blob_tag"
+	return "blog_tag"
 }
 
 func (t Tag) Count(db *gorm.DB) (int, error) {
@@ -54,6 +54,10 @@ func (t Tag) Create(db *gorm.DB) error {
 	return db.Create(&t).Error
 }
 
-func (t Tag) Update(db *gorm.DB) error {
-	return db.Model(&t).Where("id = ? AND is_deleted = ?", t.ID, 0).Update(t).Error
+func (t Tag) Update(db *gorm.DB, values interface{}) error {
+	return db.Model(&t).Where("id = ? AND is_deleted = ?", t.ID, 0).Updates(values).Error
+}
+
+func (t Tag) Delete(db *gorm.DB) error {
+	return db.Model(&t).Where("id = ? AND is_deleted = ?", t.ID, 0).Delete(t).Error
 }
