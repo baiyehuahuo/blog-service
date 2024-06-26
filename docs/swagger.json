@@ -425,6 +425,51 @@
                     }
                 }
             }
+        },
+        "/upload/file": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "文件上传",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文件类型",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -461,7 +506,7 @@
                     "type": "string"
                 },
                 "createdOn": {
-                    "description": "创建时间",
+                    "description": "创建时间  todo uint32 可能不太够用",
                     "type": "integer"
                 },
                 "deletedOn": {
@@ -519,7 +564,7 @@
                     "type": "string"
                 },
                 "createdOn": {
-                    "description": "创建时间",
+                    "description": "创建时间  todo uint32 可能不太够用",
                     "type": "integer"
                 },
                 "deletedOn": {

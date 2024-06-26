@@ -2,11 +2,13 @@ package routers
 
 import (
 	_ "blog-service/docs"
+	"blog-service/global"
 	"blog-service/internal/middleware"
 	v1 "blog-service/internal/routers/api/v1"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"net/http"
 )
 
 func NewRouter() *gin.Engine {
@@ -17,11 +19,13 @@ func NewRouter() *gin.Engine {
 	// 注册一个针对 swagger 的路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	var (
-		tag     v1.Tag
-		article v1.Article
-	)
+	r.POST("/upload/file", v1.NewUpload().UploadFile)
+	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath)) // todo relative path "static" is config
 	if apiv1 := r.Group("/api/v1"); apiv1 != nil {
+		var (
+			tag     v1.Tag
+			article v1.Article
+		)
 		// 标签管理
 		apiv1.POST("/tags", tag.Create)       // 新增标签
 		apiv1.DELETE("/tags/:id", tag.Delete) // 删除指定标签

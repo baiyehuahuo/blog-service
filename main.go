@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"strconv"
 	"time"
 )
 
@@ -35,10 +36,10 @@ func main() {
 	global.Logger.Infof("%s: test-logger/%s", "fwf", "blog-service")
 	r := routers.NewRouter()
 	s := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":" + strconv.Itoa(global.ServerSetting.HttpPort),
 		Handler:        r,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
+		ReadTimeout:    global.ServerSetting.ReadTimeout * time.Second,
+		WriteTimeout:   global.ServerSetting.WriteTimeout * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 	if err := s.ListenAndServe(); err != nil {

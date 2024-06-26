@@ -1,18 +1,24 @@
 package setting
 
+import "time"
+
 type ServerSettingConfig struct {
-	RunMode      string `yaml:"RunMode"`
-	HttpPort     int    `yaml:"HttpPort"`
-	ReadTimeout  int    `yaml:"ReadTimeout"`
-	WriteTimeout int    `yaml:"WriteTimeout"`
+	RunMode      string        `yaml:"RunMode"`
+	HttpPort     int           `yaml:"HttpPort"`
+	ReadTimeout  time.Duration `yaml:"ReadTimeout"`
+	WriteTimeout time.Duration `yaml:"WriteTimeout"`
 }
 
 type AppSettingConfig struct {
-	MaxPageSize     int    `yaml:"MaxPageSize"`
-	LogSavePath     string `yaml:"LogSavePath"`
-	LogFileName     string `yaml:"LogFileName"`
-	LogFileExt      string `yaml:"LogFileExt"`
-	DefaultPageSize int    `yaml:"DefaultPageSize"`
+	DefaultPageSize      int      `yaml:"DefaultPageSize"`
+	LogSavePath          string   `yaml:"LogSavePath"`
+	LogFileName          string   `yaml:"LogFileName"`
+	UploadImageMaxSize   int      `yaml:"UploadImageMaxSize"`
+	UploadImageAllowExts []string `yaml:"UploadImageAllowExts"`
+	MaxPageSize          int      `yaml:"MaxPageSize"`
+	LogFileExt           string   `yaml:"LogFileExt"`
+	UploadSavePath       string   `yaml:"UploadSavePath"`
+	UploadServerURL      string   `yaml:"UploadServerURL"`
 }
 
 type DatabaseSettingConfig struct {
