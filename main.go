@@ -52,21 +52,32 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
+
 	if err = st.ReadSection("Server", &global.ServerSetting); err != nil {
 		return err
 	}
 	log.Printf("%#v", global.ServerSetting)
+
 	if err = st.ReadSection("App", &global.AppSetting); err != nil {
 		return err
 	}
 	log.Printf("%#v", global.AppSetting)
+
 	if err = st.ReadSection("Database", &global.DatabaseSetting); err != nil {
 		return err
 	}
 	log.Printf("%#v", global.DatabaseSetting)
+
 	if err = st.ReadSection("JWT", &global.JWTSetting); err != nil {
 		return err
 	}
+	log.Printf("%#v", global.JWTSetting)
+
+	if err = st.ReadSection("Email", &global.EmailSetting); err != nil {
+		return err
+	}
+	log.Printf("%#v", global.EmailSetting)
+
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second

@@ -40,6 +40,16 @@ type JWTSettingConfig struct {
 	Expire time.Duration `yaml:"Expire"`
 }
 
+type EmailSettingConfig struct {
+	Host     string   `yaml:"Host"`
+	Port     int      `yaml:"Port"`
+	UserName string   `yaml:"UserName"`
+	Password string   `yaml:"Password"`
+	IsSSL    bool     `yaml:"IsSSL"`
+	From     string   `yaml:"From"`
+	To       []string `yaml:"To"`
+}
+
 func (s *Setting) ReadSection(k string, v interface{}) error {
 	err := s.vp.UnmarshalKey(k, v)
 	if err != nil {
