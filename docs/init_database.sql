@@ -49,3 +49,20 @@ CREATE TABLE `blob_article_tag` (
     `is_deleted` TINYINT(16) UNSIGNED DEFAULT 0 COMMENT '是否删除 0 未删除 1 已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章标签关联';
+
+CREATE TABLE `blog_auth` (
+    `id` INT(16) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `app_key` VARCHAR(20) DEFAULT '' COMMENT 'Key',
+    `app_secret` VARCHAR(50) DEFAULT '' COMMENT 'Secret',
+
+    `created_on` INT(16) UNSIGNED DEFAULT 0 COMMENT '创建时间',
+    `created_by` VARCHAR(10) DEFAULT '' COMMENT '创建人',
+    `modified_on` INT(16) UNSIGNED DEFAULT 0 COMMENT '修改时间',
+    `modified_by` VARCHAR(100) DEFAULT '' COMMENT '修改人',
+    `deleted_on` INT(16) UNSIGNED DEFAULT 0 COMMENT '删除时间',
+    `is_deleted` TINYINT(16) UNSIGNED DEFAULT 0 COMMENT '是否删除 0 未删除 1 已删除',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='认证管理';
+
+INSERT INTO blog_auth (`id`, `app_key`, `app_secret`, `created_on`, `created_by`, `modified_on`, `modified_by`, `deleted_on`, `is_deleted`)
+VALUES (1, 'fwf', 'go-programming-tour-book', 0, 'fwf', 0, '', 0, 0);

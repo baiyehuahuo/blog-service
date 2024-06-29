@@ -4,6 +4,7 @@ import (
 	_ "blog-service/docs"
 	"blog-service/global"
 	"blog-service/internal/middleware"
+	"blog-service/internal/routers/api"
 	v1 "blog-service/internal/routers/api/v1"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -19,9 +20,12 @@ func NewRouter() *gin.Engine {
 	// 注册一个针对 swagger 的路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	r.POST("/auth", api.GetAuth)
 	r.POST("/upload/file", v1.NewUpload().UploadFile)
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath)) // todo relative path "static" is config
 	if apiv1 := r.Group("/api/v1"); apiv1 != nil {
+		apiv1.Use(middleware.JWT())
+
 		var (
 			tag     v1.Tag
 			article v1.Article

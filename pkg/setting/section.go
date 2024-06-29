@@ -34,6 +34,12 @@ type DatabaseSettingConfig struct {
 	MaxOpenConns int    `yaml:"MaxOpenConns"`
 }
 
+type JWTSettingConfig struct {
+	Secret string        `yaml:"Secret"`
+	Issuer string        `yaml:"Issuer"`
+	Expire time.Duration `yaml:"Expire"`
+}
+
 func (s *Setting) ReadSection(k string, v interface{}) error {
 	err := s.vp.UnmarshalKey(k, v)
 	if err != nil {

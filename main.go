@@ -38,8 +38,8 @@ func main() {
 	s := &http.Server{
 		Addr:           ":" + strconv.Itoa(global.ServerSetting.HttpPort),
 		Handler:        r,
-		ReadTimeout:    global.ServerSetting.ReadTimeout * time.Second,
-		WriteTimeout:   global.ServerSetting.WriteTimeout * time.Second,
+		ReadTimeout:    global.ServerSetting.ReadTimeout,
+		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 	if err := s.ListenAndServe(); err != nil {
@@ -64,6 +64,12 @@ func setupSetting() error {
 		return err
 	}
 	log.Printf("%#v", global.DatabaseSetting)
+	if err = st.ReadSection("JWT", &global.JWTSetting); err != nil {
+		return err
+	}
+	global.ServerSetting.ReadTimeout *= time.Second
+	global.ServerSetting.WriteTimeout *= time.Second
+	global.JWTSetting.Expire *= time.Second
 	return nil
 }
 
