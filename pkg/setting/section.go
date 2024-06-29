@@ -10,15 +10,16 @@ type ServerSettingConfig struct {
 }
 
 type AppSettingConfig struct {
-	DefaultPageSize      int      `yaml:"DefaultPageSize"`
-	LogSavePath          string   `yaml:"LogSavePath"`
-	LogFileName          string   `yaml:"LogFileName"`
-	UploadImageMaxSize   int      `yaml:"UploadImageMaxSize"`
-	UploadImageAllowExts []string `yaml:"UploadImageAllowExts"`
-	MaxPageSize          int      `yaml:"MaxPageSize"`
-	LogFileExt           string   `yaml:"LogFileExt"`
-	UploadSavePath       string   `yaml:"UploadSavePath"`
-	UploadServerURL      string   `yaml:"UploadServerURL"`
+	DefaultPageSize       int           `yaml:"DefaultPageSize"`
+	DefaultContextTimeout time.Duration `yaml:"DefaultContextTimeout"`
+	LogSavePath           string        `yaml:"LogSavePath"`
+	LogFileName           string        `yaml:"LogFileName"`
+	UploadImageMaxSize    int           `yaml:"UploadImageMaxSize"`
+	UploadImageAllowExts  []string      `yaml:"UploadImageAllowExts"`
+	MaxPageSize           int           `yaml:"MaxPageSize"`
+	LogFileExt            string        `yaml:"LogFileExt"`
+	UploadSavePath        string        `yaml:"UploadSavePath"`
+	UploadServerURL       string        `yaml:"UploadServerURL"`
 }
 
 type DatabaseSettingConfig struct {

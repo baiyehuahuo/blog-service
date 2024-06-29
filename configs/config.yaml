@@ -5,6 +5,7 @@ Server:
   WriteTimeout: 60
 App:
   DefaultPageSize: 10
+  DefaultContextTimeout: 60
   MaxPageSize: 100
   LogSavePath: storage/logs
   LogFileName: app
