@@ -6,6 +6,8 @@ import (
 	"blog-service/internal/routers"
 	"blog-service/pkg/logger"
 	"blog-service/pkg/setting"
+	"blog-service/pkg/tracer"
+	"context"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
@@ -26,6 +28,9 @@ func init() {
 	if err = setupLogger(); err != nil {
 		log.Fatalf("init.setupLogger err: %v", err)
 	}
+	if err = setupTracer(); err != nil {
+		log.Fatalf("init.setupTracer err: %v", err)
+	}
 }
 
 // @title 博客系统
@@ -33,7 +38,7 @@ func init() {
 // @description Go 语言编程之旅：一起用 Go 做项目 第二章
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
-	global.Logger.Infof("%s: test-logger/%s", "fwf", "blog-service")
+	global.Logger.Infof(context.Background(), "%s: test-logger/%s", "fwf", "blog-service")
 	r := routers.NewRouter()
 	s := &http.Server{
 		Addr:           ":" + strconv.Itoa(global.ServerSetting.HttpPort),
@@ -103,3 +108,26 @@ func setupLogger() error {
 	}, "", log.LstdFlags).WithCaller(2)
 	return nil
 }
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer("blog-service", "127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
+	return nil
+}
+
+/*
+docker run -d --name jaeger \
+  -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+  -p 5775:5775/udp \
+  -p 6831:6831/udp \
+  -p 6832:6832/udp \
+  -p 5778:5778 \
+  -p 16686:16686 \
+  -p 14268:14268 \
+  -p 9411:9411 \
+  jaegertracing/all-in-one:1.16
+
+*/

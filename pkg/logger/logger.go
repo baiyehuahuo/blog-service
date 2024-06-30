@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"runtime"
@@ -90,6 +91,18 @@ func (l *Logger) WithCaller(skip int) *Logger {
 	return ll
 }
 
+// WithTrace 对日志的破坏性修改 算耦合操作
+func (l *Logger) WithTrace() *Logger {
+	ginCtx, ok := l.ctx.(*gin.Context)
+	if !ok {
+		return l
+	}
+	return l.WithFields(Fields{
+		"trace_id": ginCtx.MustGet("X-Trace-ID"),
+		"span_id":  ginCtx.MustGet("X-Span-ID"),
+	})
+}
+
 // WithCallersFrames 设置当前的整个调用栈信息
 func (l *Logger) WithCallersFrames() *Logger {
 	var (
@@ -136,11 +149,13 @@ func (l *Logger) Output(level Level, message string) {
 	}
 }
 
-func (l *Logger) Info(v ...interface{}) {
+func (l *Logger) Info(ctx context.Context, v ...interface{}) {
+	l = l.WithContext(ctx).WithTrace()
 	l.Output(LevelInfo, fmt.Sprint(v...))
 }
 
-func (l *Logger) Infof(format string, v ...interface{}) {
+func (l *Logger) Infof(ctx context.Context, format string, v ...interface{}) {
+	l = l.WithContext(ctx).WithTrace()
 	l.Output(LevelInfo, fmt.Sprintf(format, v...))
 }
 
